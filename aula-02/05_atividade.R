@@ -45,6 +45,7 @@ acessos <- unlist(acessos_alunos)
 ### # ###
 
 maiores <- acessos_alunos[acessos > acessos_alunos$alu201830117]
+paste("Alunos com maiores acessos que eu:", length(maiores))
 
 ### 5 ###
 ## Combine todas as etapas acima em uma única chamada, sem a criação dos vetores auxiliares
