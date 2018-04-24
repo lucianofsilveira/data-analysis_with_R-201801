@@ -64,7 +64,8 @@ if( is.integer( as.integer(42) )) {
 print(pi, digits=10)
 
 # a função paste combina os atributos em uma única string, utilizando para delimitação o espaço em branco (por padrão)
-paste("O tipo de pi é", class(pi))
+paste("A classe de pi é", class(pi))
+paste("O tipo de pi é", typeof(pi))
 
 #' 
 ## ------------------------------------------------------------------------
@@ -80,6 +81,7 @@ print(12.345)
 eh_numerico <- is.numeric( 42 ) 
 
 print(eh_numerico)
+print(as.numeric(eh_numerico))
 
 #' 
 ## ------------------------------------------------------------------------
@@ -98,6 +100,7 @@ if( eh_numerico ) {
 print( eh_numerico + 0 )
 print( eh_numerico * 2 )
 print( is.numeric(eh_numerico + 0) )
+print( is.numeric(eh_numerico) )
 
 #' 
 #' 
@@ -125,6 +128,10 @@ print( is.na(valor_ausente) )
 ## ------------------------------------------------------------------------
 1 / 0
 0 / 0
+
+Inf - Inf
+
+Inf - 1
 
 #' 
 #' 
