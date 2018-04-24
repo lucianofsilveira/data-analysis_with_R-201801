@@ -27,14 +27,11 @@ length(acessos_alunos)
 ## você fez. A linha deve ser impressa na Console, com um texto que diga o seu código de aluno e o valor conforme o seguinte exemplo:
 ## "O aluno <alu...> realizou N acessos."
 
-paste("O aluno alu201830117 realizou ", acessos_alunos$alu201830117)
-
-
 ## Dica 1: Utilize a função paste() para composição do texto que será impresso. 
 ## Dica 2: Vimos exemplos disto nos materiais dos tipos numéricos e das estruturas de dados.
 ### # ###
 
-
+sprintf("O aluno alu201830117 realizou %d acessos", acessos_alunos$alu201830117)
 
 ### 4 ###
 ## A operação abaixo cria um vetor com todas as quantidades de acessos por aluno.
@@ -47,7 +44,7 @@ acessos <- unlist(acessos_alunos)
 ## 3. Determine o tamanho do vetor da operação 2, imprimindo o resultado na Console
 ### # ###
 
-
+maiores <- acessos_alunos[acessos > acessos_alunos$alu201830117]
 
 ### 5 ###
 ## Combine todas as etapas acima em uma única chamada, sem a criação dos vetores auxiliares
