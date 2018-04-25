@@ -44,13 +44,15 @@ acessos <- unlist(acessos_alunos)
 ## 3. Determine o tamanho do vetor da operação 2, imprimindo o resultado na Console
 ### # ###
 
-maiores <- acessos_alunos[acessos > acessos_alunos$alu201830117]
-paste("Alunos com maiores acessos que eu:", length(maiores))
+#maiores <- acessos_alunos[acessos > acessos_alunos$alu201830117]
+maiores <- acessos > acessos_alunos$alu201830117
+which(maiores)
+paste("Alunos com maiores acessos que eu:", length(which(maiores)))
 
 ### 5 ###
 ## Combine todas as etapas acima em uma única chamada, sem a criação dos vetores auxiliares
 ### # ###
-
+paste("Alunos com maiores acessos que eu:", length(acessos_alunos[acessos > acessos_alunos$alu201830117]))
 
 
 ### 6 ###
@@ -60,6 +62,7 @@ paste("Alunos com maiores acessos que eu:", length(maiores))
 ## Dica: Lembre que falamos sobre como o R faz conversões implícitas entre o tipo lógico e tipos numéricos
 ### # ###
 
+paste("Alunos com menores acessos que eu:", sum(acessos < acessos_alunos$alu201830117))
 
 
 ### 7 ###
@@ -73,7 +76,27 @@ paste("Alunos com maiores acessos que eu:", length(maiores))
 ## OBSERVAÇÃO :: Não avaliarei participação na forma do enunciado deste exercício. 
 ### # ###
 
+## Primeira solução
+notas <- acessos
 
+for (i in 1:length(acessos))
+{
+  if (acessos[i] == 0)
+  {
+    notas[i] = 0
+  }
+  else if (acessos[i] < 10)
+  {
+    notas[i] = 1
+  }
+  else
+    notas[i] = 2
+}
+
+## Segunda solução
+notas[which(acessos == 0)] <- 0;
+notas[which(acessos > 0 & acessos < 10)] <- 1;
+notas[which(acessos >= 10)] <- 2;
 
 ### 8 ###
 ## Visualização da quantidade de alunos com cada nota de participação. Esta não é uma atividade, apenas uma ilustração de como
