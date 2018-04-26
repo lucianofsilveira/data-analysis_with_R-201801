@@ -114,19 +114,83 @@ acessos_alunos_e_guest$guest <- NA
 ## Repita as atividades 4, 5, 6, e 7 utilizando o acessos_com_guest no lugar da lista acessos_alunos.
 ## Tome o devido cuidado de sempre criar variáveis com nomes diferentes das já utilizadas! 
 
+### 4 ###
+acessos_guest <- unlist(acessos_alunos_e_guest)
+acessos_guest
 
+#maiores <- acessos_alunos[acessos > acessos_alunos$alu201830117]
+maiores_guest <- acessos_guest > acessos_alunos_e_guest$alu201830117
+which(maiores_guest)
+paste("Alunos com maiores acessos que eu:", length(which(maiores_guest)))
+
+### 5 ###
+paste("Alunos com maiores acessos que eu:", length(acessos_alunos_e_guest[acessos_guest > acessos_alunos_e_guest$alu201830117]))
+
+### 6 ###
+paste("Alunos com menores acessos que eu:", sum(acessos_guest < acessos_alunos_e_guest$alu201830117))
+
+
+### 7 ###
+## Primeira solução
+notas_guest <- acessos_guest
+
+for (i in 1:length(acessos_guest))
+{
+  if (acessos_guest[i] == 0)
+  {
+    notas_guest[i] = 0
+  }
+  else if (acessos_guest[i] < 10)
+  {
+    notas_guest[i] = 1
+  }
+  else
+    notas_guest[i] = 2
+}
+
+## Segunda solução
+notas_guest[which(acessos_guest == 0)] <- 0;
+notas_guest[which(acessos_guest > 0 & acessos < 10)] <- 1;
+notas_guest[which(acessos_guest >= 10)] <- 2;
 
 ### 10 ###
 ## Responda as seguintes perguntas:
 
 
 # 1. Houve modificação no número de alunos com mais e com menos acessos que você?
+# Como utilizei a função length para calcular os maiores acessos, tive um acesso a mais. A função contou o NA como maior acesso.
+# Para os menores, utilizei o sum, que retornou NA.
+# Nas soluções para o item 7 tive problemas em ambas, era sempre esperado TRUE ou FALSE e o NA acabou atrapalhando a leitura e
+# deu erro na execução.
 
 # 2. Como você conclui que o R trata comparações (operações relacionais) entre valores numéricos e NA?
+# Me parece que NA é considerado tanto para TRUE como para FALSE no caso do length, já no sum, a soma não consegue executar e
+# retorna NA.
 
 # 3. Qual o resultado do uso da função sum na presença de NA? O que você conclui sobre a operação de soma de todos os valores de
 #    um vetor na presença de NA?
+# O resultado foi NA. Acredito que o sum não consegue executar pois não é possível estabelecer um valor numérico para NA, diferente
+# de como acontece com os valores lógicos TRUE e FALSE, que são substituídos na soma por 1 e 0 respectivamente.
 
 # 4. Execute o comando abaixo para ler a documentação da função sum e veja se há como modificar a chamada da função sum na presença
 #    de NAs. Teste os exemplos da página de help da função sum.
 help(sum)
+
+## Pass a vector to sum, and it will add the elements together.
+sum(1:5)
+
+## Pass several numbers to sum, and it also adds the elements.
+sum(1, 2, 3, 4, 5)
+
+## In fact, you can pass vectors into several arguments, and everything gets added.
+sum(1:2, 3:5)
+
+## If there are missing values, the sum is unknown, i.e., also missing, ....
+sum(1:5, NA)
+
+## ... unless  we exclude missing values explicitly:
+sum(1:5, NA, na.rm = TRUE)
+
+## Teste com passagem de parâmetro na função sum para ignorar NA
+paste("Alunos com menores acessos que eu:", sum(acessos_guest < acessos_alunos_e_guest$alu201830117))
+paste("Alunos com menores acessos que eu:", sum(acessos_guest < acessos_alunos_e_guest$alu201830117, na.rm = TRUE))
