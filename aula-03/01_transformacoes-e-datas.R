@@ -6,7 +6,7 @@
 #' ---
 #' 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-library(tidyverse)
+library(tidyverse)   
 
 #' 
 #' 
@@ -99,6 +99,9 @@ ex1 %>%
 ## ----"Mutate Creating"---------------------------------------------------
 ex1 %>% 
   mutate( vec6 = vec5 + months(vec2) )
+
+ex1 %>% 
+  mutate( vec6 = vec5 + months(6) ) #Teste com troca de ano
 
 #' 
 #' - Criação de uma nova coluna e reuso na mesma operação:
