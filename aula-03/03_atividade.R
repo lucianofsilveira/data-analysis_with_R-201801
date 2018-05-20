@@ -31,6 +31,15 @@ salarios %>% count(UF_EXERCICIO) %>% pull(UF_EXERCICIO) -> ufs # EXEMPLO
 ## 
 ### # ####
 
+salarios %>%
+  filter(ORGSUP_LOTACAO != ORGSUP_EXERCICIO) %>%
+  group_by(DESCRICAO_CARGO) %>%
+  summarise(qtd = n()) %>%
+  arrange(desc(qtd)) %>%
+  head(qtd,n = 5) %>%
+  ungroup() %>%
+  pull(DESCRICAO_CARGO) -> cargos_diferente_lotacao
+
 
 ### 3 ####
 ## 
