@@ -40,7 +40,6 @@ salarios %>%
   ungroup() %>%
   pull(DESCRICAO_CARGO) -> cargos_diferente_lotacao
 
-
 ### 3 ####
 ## 
 ## Utilizando o vetor criado na atividade anterior, calcule a média e o desvio padrão de cada cargo, 
@@ -63,3 +62,14 @@ salarios %>% filter(DESCRICAO_CARGO %in% c("MINISTRO DE PRIMEIRA CLASSE", "ANALI
 ## 
 ### # ####
 
+salarios %>%
+  filter(DESCRICAO_CARGO %in% cargos_diferente_lotacao) %>%
+  group_by(DESCRICAO_CARGO, ORGAO_DIFERENTE = ORGSUP_LOTACAO != ORGSUP_EXERCICIO) %>%
+  summarise(MEDIA_SALARIAL = mean(REMUNERACAO_FINAL),
+            DESVIO_PADRAO = sd(REMUNERACAO_FINAL),
+            MEDIANA = median(REMUNERACAO_FINAL),
+            DESVIO_ABSOLUTO_MEDIANA = median( abs( REMUNERACAO_FINAL - median( REMUNERACAO_FINAL ))),
+            MAIOR_SALARIO = max(REMUNERACAO_FINAL),
+            MENOR_SALARIO = min(REMUNERACAO_FINAL))
+  
+  
