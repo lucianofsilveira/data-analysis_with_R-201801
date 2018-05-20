@@ -8,6 +8,13 @@ library(lubridate)
 ### IMPORTANTE ###
 ## Se você utilizar alguma função própria ou do material de aula, o código da(s) função(ões) deve estar neste arquivo da atividade.
 
+salarios <- read_csv("aula-03/data/201802_dados_salarios_servidores.csv.gz")
+
+cotacao_dolar <- 3.2428
+
+salarios %>%
+  mutate(REMUNERACAO_FINAL = REMUNERACAO_REAIS + (REMUNERACAO_DOLARES * cotacao_dolar)) %>%
+  filter(REMUNERACAO_FINAL >= 900) -> salarios
 
 ### 1 ####
 ## 
@@ -19,6 +26,25 @@ library(lubridate)
 ## - O resultado desta atividade deve ser um Data Frame com as variáveis de Cargo, Coeficiente de Correlação, Direção da Correlação e Força da Correlação
 ## 
 ### # ####
+
+salarios %>%
+  group_by(DESCRICAO_CARGO) %>%
+  summarise(qtd = n()) %>%
+  filter(qtd >= 200) %>%
+  ungroup() %>%
+  pull(DESCRICAO_CARGO) -> cargos_acima_200
+
+salarios %>%
+  filter(DESCRICAO_CARGO %in% cargos_acima_200) %>%
+  group_by(DESCRICAO_CARGO) %>%
+  summarise(COEFICIENTE_CORRELACAO = cor(x = year(DATA_INGRESSO_ORGAO), y = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO ))) %>%
+  ungroup() %>%
+  mutate(CORRELACAO_DIRECAO = if_else(sign(COEFICIENTE_CORRELACAO) == 1, 'POSITIVA', 'NEGATIVA'),
+         CORRELACAO_FORCA = case_when(abs(COEFICIENTE_CORRELACAO) >= 0.0 & abs(COEFICIENTE_CORRELACAO) < 0.3 ~ 'DESPREZIVEL',
+                                      abs(COEFICIENTE_CORRELACAO) >= 0.3 & abs(COEFICIENTE_CORRELACAO) < 0.5 ~ 'FRACA',
+                                      abs(COEFICIENTE_CORRELACAO) >= 0.5 & abs(COEFICIENTE_CORRELACAO) < 0.7 ~ 'MODERADA',
+                                      abs(COEFICIENTE_CORRELACAO) >= 0.7 & abs(COEFICIENTE_CORRELACAO) < 0.9 ~ 'FORTE',
+                                      abs(COEFICIENTE_CORRELACAO) >= 0.9 ~ 'MUITO FORTE')) -> correlacao_ingresso_diploma
 
 ### 2 ###
 ##
