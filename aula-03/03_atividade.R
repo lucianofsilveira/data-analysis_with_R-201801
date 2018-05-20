@@ -70,6 +70,11 @@ salarios %>%
             MEDIANA = median(REMUNERACAO_FINAL),
             DESVIO_ABSOLUTO_MEDIANA = median( abs( REMUNERACAO_FINAL - median( REMUNERACAO_FINAL ))),
             MAIOR_SALARIO = max(REMUNERACAO_FINAL),
-            MENOR_SALARIO = min(REMUNERACAO_FINAL))
+            MENOR_SALARIO = min(REMUNERACAO_FINAL)) %>%
+  ungroup()
+
+#Os valores por lotação dentro de um mesmo cargo são parecidos, percebemos uma diferença, porém,
+#nos valores do Desvio Absoluto da Mediana, onde o valor é bem maior (praticamente o dobro) para 
+#os casos em que os servidores estão lotados em orgãos diferentes.
   
   
