@@ -146,7 +146,11 @@ print("Atividade")
 subset_salarios %>%
   mutate(ANO_INGRESSO = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO))
 
+subset_com_ano <- subset_salarios %>%
+  mutate(ano_ingresso = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO)) 
+
 ## Determine o tempo médio de trabalho em anos, em nível nacional
+<<<<<<< HEAD
 subset_salarios %>%
   summarise(TEMPO_MEDIO_ANOS = mean(year(Sys.Date()) - year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO)))
 
@@ -163,6 +167,24 @@ subset_salarios %>%
   summarise(SALARIO_MEDIO = mean(REMUNERACAO_REAIS)) %>%
   ungroup() %>%
   arrange(desc(SALARIO_MEDIO))
+=======
+subset_com_ano %>%
+  summarise(tempo_medio = mean(year(today()) - ano_ingresso))
+
+## Determine o tempo médio de trabalho em anos, por UF
+subset_com_ano %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise(tempo_medio = mean(year(today()) - ano_ingresso)) %>%
+  arrange(desc(tempo_medio)) %>% View()
+
+## Determine a média salarial por ano de ingresso
+subset_com_ano %>%
+  group_by(ano_ingresso) %>%
+  summarise(media_salarial = mean(REMUNERACAO_REAIS)) %>%
+  arrange(desc(media_salarial))
+
+
+>>>>>>> upstream/master
 
 #' >> FIM DA ATIVIDADE
 #' 
@@ -210,6 +232,28 @@ subset_salarios %>%
 print("Atividade")
 
 ## Código aqui
+subset_salarios %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise(
+        salario_medio = mean(REMUNERACAO_REAIS),
+        servidores = n(),
+        mediana_salario = median(REMUNERACAO_REAIS),
+        media_maior = salario_medio > mediana_salario) %>%
+  ungroup() %>%
+  group_by(media_maior) %>%
+  summarise(total = n()) %>%
+  ungroup()
+
+
+subset_salarios %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise(
+    salario_medio = mean(REMUNERACAO_REAIS),
+    servidores = n(),
+    mediana_salario = median(REMUNERACAO_REAIS),
+    media_maior = salario_medio > mediana_salario) %>%
+  ungroup() %>%
+  count(media_maior)
 
 #' 
 #' __Atividade II__
@@ -303,6 +347,17 @@ subset_salarios %>%
 print("Atividade")
 
 ## Código aqui
+dois_desvios <- 2 * sd( subset_salarios$REMUNERACAO_REAIS )
+media <- mean( subset_salarios$REMUNERACAO_REAIS )
+
+dois_desvios_da_media <- media + dois_desvios
+
+subset_salarios %>%
+  filter(REMUNERACAO_REAIS <= dois_desvios_da_media) %>%
+  nrow() -> total_dentro_de_dois_desvios
+
+total_dentro_de_dois_desvios / nrow(subset_salarios)
+
 
 #' 
 #' __Atividade II__
@@ -312,7 +367,7 @@ print("Atividade")
 ## ------------------------------------------------------------------------
 print("Atividade")
 
-## Código aqui
+## Código aqui 
 
 #' 
 #' __Atividade III__

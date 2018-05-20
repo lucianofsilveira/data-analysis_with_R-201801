@@ -14,6 +14,7 @@ salarios <- read_csv("aula-03/data/201802_dados_salarios_servidores.csv.gz")
 ## 
 ### # ####
 
+print(salarios)
 
 ### 2 ####
 ## 
