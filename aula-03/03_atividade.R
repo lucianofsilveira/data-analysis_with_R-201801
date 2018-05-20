@@ -14,7 +14,11 @@ salarios <- read_csv("aula-03/data/201802_dados_salarios_servidores.csv.gz")
 ## 
 ### # ####
 
-print(salarios)
+cotacao_dolar <- 3.2428
+
+salarios %>%
+  mutate(REMUNERACAO_FINAL = REMUNERACAO_REAIS + (REMUNERACAO_DOLARES * cotacao_dolar)) %>%
+  filter(REMUNERACAO_FINAL >= 900) -> salarios
 
 ### 2 ####
 ## 
