@@ -56,3 +56,34 @@ salarios %>%
 ##
 ### # ###
 
+rbind(
+correlacao_ingresso_diploma %>%
+  filter(CORRELACAO_FORCA == 'DESPREZIVEL') %>%
+  arrange(COEFICIENTE_CORRELACAO) %>%
+  head(COEFICIENTE_CORRELACAO, n = 10),
+
+correlacao_ingresso_diploma %>%
+  filter(CORRELACAO_FORCA == 'MUITO FORTE') %>%
+  arrange(desc(COEFICIENTE_CORRELACAO)) %>%
+  head(COEFICIENTE_CORRELACAO, n = 10)
+) -> correlacao_max_min
+
+salarios %>%
+  filter(DESCRICAO_CARGO %in% correlacao_max_min$DESCRICAO_CARGO) %>%
+  group_by(DESCRICAO_CARGO, ORGSUP_EXERCICIO) %>%
+  summarise(qtd = n()) %>%
+  mutate(qtd_max = max(qtd)) %>%
+  ungroup() %>%
+  filter(qtd_max == qtd) %>%
+  transmute(DESCRICAO_CARGO, ORGSUP_EXERCICIO, moda_exercicio = qtd_max)
+
+salarios %>%
+  filter(DESCRICAO_CARGO %in% correlacao_max_min$DESCRICAO_CARGO) %>%
+  group_by(DESCRICAO_CARGO, ORGSUP_LOTACAO) %>%
+  summarise(qtd = n()) %>%
+  mutate(qtd_max = max(qtd)) %>%
+  ungroup() %>%
+  filter(qtd_max == qtd) %>%
+  transmute(DESCRICAO_CARGO, ORGSUP_LOTACAO, moda_lotacao = qtd_max)
+
+
