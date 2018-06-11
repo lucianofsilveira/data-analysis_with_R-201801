@@ -7,7 +7,7 @@
 #' 
 ## ----setup, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, include=FALSE----
 library(tidyverse)
-Sys.setlocale("LC_ALL", "pt_BR")
+#Sys.setlocale("LC_ALL", "pt_BR")
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, out.width = "600px", out.height="400px")
 
 #' 
@@ -262,14 +262,48 @@ pgeom(6, prob=0.1, lower.tail = TRUE)
 #' >> ATIVIDADE EM AULA
 #' 
 #' 1. Faça o gráfico da distribuição de probabilidades de chamadas telefônicas até 20 ligações e simule 500 eventos de Bernoulli para esta mesma probabilidade. Nesta simulação, identifique quantas sequências de 6 falhas ocorreram. Use como _seed_ os últimos 5 dígitos da sua matrícula. Veja no exemplo anterior o uso da função `rle`.
+
+#Gráfico
+df_geom_probs <- data_frame(x = 0:20, y=pgeom(0:20, prob = 0.1) * 100)
+
+ggplot(df_geom_probs, aes(x=x, y=y)) +
+  geom_col() +
+  scale_x_continuous(name = "Tentativas até resposta", breaks=0:20) +
+  scale_y_continuous(name = "Prob (%)") +
+  theme_light()
+
+
+#Simulação eventos
+set.seed(30117)
+
+# Gera uma sequência de 200 eventos
+sample_head_tails <- rbernoulli(500, 0.1)
+
+# Conta a quantidade de chamadas em sequência e de respostas em sequência
+seq_head_tails <- rle(sample_head_tails)
+
+# Quais as sequências de respostas?
+seq_head_tails$lengths[!seq_head_tails$values]
+
+# Quantas sequências de 6 falhas ocorreram:
+length(which(seq_head_tails$lengths[!seq_head_tails$values] == 6))
+
+
 #' 
 #' 2. Você criou um sistema para reclamações da demora do atendimento de ligações telefônicas durante quedas de conectividade da Internet, e exige que os usuários acertem um CAPTCHA antes de postarem uma reclamação. Você observou que a probabilidade de um usuário acertar o CAPTCHA exibido no seu sistema é de 70%. 
 #' 
 #' - Seu sistema de monitoramento identificou que um usuário tentou 5 CAPTCHAS diferentes antes de conseguir reclamar do tempo de atendimento na última queda de conectividade. 
 #'     + Qual a probabilidade de um usuário acertar o CAPTCHA após 5 tentativas fracassadas? Qual o mínimo de tentativas para que a probabilidade seja maior que 50%?
-#'     
+       
+        pgeom(0, prob=0.7, lower.tail = TRUE)
+        
+        dgeom(0:10, prob=0.7)
+        #A chance de ser atendido é 70%, logo, o mínimo de tentativas para a prob. ser maior que 50% é 1 tentativa.
+        
 #'     + Você observou que, das últimas 500 _tentativas_ de publicação de reclamações, 340 acertaram a validação de CAPTCHA. Qual a probabilidade de uma quantidade entre 320 e 350 tentativas passarem pela validação de CAPTCHA a cada 500 tentativas? Dada a probabilidade de 70% de sucesso, qual o número esperado de publicações a cada 500 CAPTCHAS? DICA: ESTAMOS TRATANDO DA DISTRIBUIÇÃO BINOMIAL.
-#' 
+
+        pbinom( 96100, size = 100000, prob = 0.96, lower.tail = FALSE )
+        
 #' >> FIM ATIVIDADE
 #' 
 #' ### Variáveis aleatórias contínuas
