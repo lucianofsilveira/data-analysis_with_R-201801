@@ -32,7 +32,7 @@ insta_products <- read_csv( "project/order_products_instacart.csv" ) # Produtos 
    # Este dataframe deverá ser utilizado em todas as atividades seguintes
 
 
-#7 # Identifique os 5 horários com maior quantidade de usuários que fizeram pedidos
+#7 # Identifique os 5 horários com maior quantidade de usuários distintos que fizeram pedidos
 
 
 #8 # Quais os 15 produtos mais vendidos nestes 5 horários? Identifique os produtos e a quantidade total nestes horários (total geral, não por hora)
