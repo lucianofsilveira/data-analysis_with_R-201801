@@ -80,7 +80,7 @@ mad <- function( x, na.rm = FALSE) {
     mutate( lotacao_orgsup = if_else( ORGSUP_LOTACAO != ORGSUP_EXERCICIO, "Outro", "Mesmo" )) %>%
     select( DESCRICAO_CARGO, lotacao_orgsup, remuneracao_final ) %>%
     group_by( DESCRICAO_CARGO, lotacao_orgsup ) %>%
-    summarise_all( funs( mean, sd, median, mad, min, max )) %>%
+    summarise_all( funs( mean, sd, median, mad, min, max )) %>% #aplica todas as funções para a coluna 'remuneracao_final'
     ungroup() -> estatisticas_descritivas )
 
 estatisticas_descritivas %>%
