@@ -170,42 +170,100 @@ top10_insta_orders %>%
 
 top10_insta_orders %>%
     group_by(order_hour_of_day, product_id) %>%
-    summarise(qtd_hora = n(),
-              sd_low = mean(qtd_hora) - 1 * sd(qtd_hora),
-              sd_high = mean(qtd_hora) + 1 * sd(qtd_hora)) %>%
+    summarise(qtd_hora = n()) %>%
     ungroup() %>%
-    #group_by(order_hour_of_day) %>%
-    #summarise(sd_low = mean(qtd_hora) - 1 * sd(qtd_hora),
-     #         sd_high = mean(qtd_hora) + 1 * sd(qtd_hora)) %>%
-    #ungroup() %>%
-    
-    ggplot( aes( x = order_hour_of_day, y = quantidade, ymin = sd_low, ymax = sd_high )) +
-    geom_ribbon(fill = "lightgray", alpha = 0.5) + 
+    group_by(order_hour_of_day) %>%
+    mutate(hora = as.numeric(order_hour_of_day),
+           sd_low = mean(qtd_hora) - 1 * sd(qtd_hora),
+           sd_high = mean(qtd_hora) + 1 * sd(qtd_hora)) %>%
+    ungroup() %>%
+    ggplot( aes( x = hora, y = qtd_hora, ymin = sd_low, ymax = sd_high )) +
+    geom_ribbon(aes(ymin = sd_low, ymax = sd_high), alpha = 0.3, col = "grey") +
     geom_jitter(alpha = .2, height = 0, width = 0.3) +
-    #scale_x_continuous( breaks = 2005:2017 ) +
-    #scale_y_continuous( breaks = seq(from = -10, to = 80, by = 5 )) +
-    labs( x = "Ano de filmagem"
-          , y = "Quantidade de Línguas"
-          , title = "Evolução da quantidade de línguas por vídeo ao longo dos anos"
-          , subtitle = "Período considerado somente a partir de 2005. Dados ajustados para mínimo de 1 língua por apresentação.\n A faixa cinza correponde ao intervalo de 2 desvios padrão acima e abaixo da média, calculados ano a ano."
-          , caption = "Dados de TED Talks de https://www.kaggle.com/rounakbanik/ted-talks/data") +
+    scale_x_continuous( breaks = seq(from = 0, to = 24, by = 1)) +
+    scale_y_continuous( breaks = seq(from = 0, to = 200, by = 25)) +
+    labs(x = 'Hora', y = 'Produtos') +
     theme_bw()
-
 
 #12 # Visualize um boxplot da quantidade de pedidos por hora nos 7 dias da semana. O resultado deve ter order_dow como eixo x.
 
+top10_insta_orders %>%
+    group_by(order_dow, order_hour_of_day) %>%
+    summarise(qtd_hora = n()) %>%
+    ungroup() %>%
+    ggplot( aes( x = order_dow, y = qtd_hora, group = order_dow )) +
+    geom_boxplot() +
+    scale_x_continuous( breaks = seq(from = 0, to = 6, by = 1) ) +
+    labs(x = 'Dia da Semana',
+         y = 'Pedidos'
+         ) +
+    theme_bw()
 
 #13 # Identifique, por usuário, o tempo médio entre pedidos
 
+top10_insta_orders %>%
+    group_by(user_id) %>%
+    summarise(tempo_medio = mean(days_since_prior_order)) %>%
+    ungroup()
 
 #14 # Faça um gráfico de barras com a quantidade de usuários em cada tempo médio calculado
 
+top10_insta_orders %>%
+    group_by(user_id) %>%
+    summarise(tempo_medio = mean(days_since_prior_order)) %>%
+    ungroup() %>%
+    group_by(tempo_medio) %>%
+    summarise(usuarios = n()) %>%
+    ungroup() %>%
+    ggplot( aes( x = tempo_medio, y = usuarios )) +
+    geom_col(fill="dark orange", alpha=0.6) +
+    scale_y_continuous( breaks = seq(from = 0, to = 25000, by = 2500) ) +
+    scale_x_continuous( breaks = seq(from = 0, to = 30, by = 1) ) +
+    labs(x = 'Tempo Médio Entre Pedidos',
+         y = 'Total de Usuários') +
+    theme_bw()
 
 #15 # Faça um gráfico de barras com a quantidade de usuários em cada número de dias desde o pedido anterior. Há alguma similaridade entre os gráficos das atividades 14 e 15? 
 
+top10_insta_orders %>%
+    group_by(days_since_prior_order) %>%
+    summarise(count = n_distinct(user_id)) %>%
+    ungroup() %>%
+    ggplot( aes( x = days_since_prior_order, y = count )) +
+    geom_col(fill="dark red", alpha=0.6) +
+    scale_y_continuous( breaks = seq(from = 0, to = 25000, by = 2500) ) +
+    scale_x_continuous( breaks = seq(from = 0, to = 30, by = 1) ) +
+    labs(x = 'Dias desde o último pedido',
+         y = 'Total de Usuários') +
+    theme_bw()
+
+    #A aparência dos dois gráficos é muito parecida. Os valores de tempo médio por usuário e quantidade de usuários por tempo médio são muito parecidos.
 
 #16 # Repita o gráfico da atividade 14 mantendo somente os usuários com no mínimo 5 pedidos. O padrão se mantém?
 
+top10_insta_orders %>%
+    group_by(user_id) %>%
+    summarise(count = n()) %>%
+    filter(count >= 5) %>%
+    ungroup() -> users_5_orders
+
+top10_insta_orders %>%
+    inner_join(users_5_orders, by = 'user_id') %>%
+    group_by(user_id) %>%
+    summarise(tempo_medio = mean(days_since_prior_order)) %>%
+    ungroup() %>%
+    group_by(tempo_medio) %>%
+    summarise(usuarios = n()) %>%
+    ungroup() %>%
+    ggplot( aes( x = tempo_medio, y = usuarios )) +
+    geom_col(fill="dark green", alpha=0.6) +
+    scale_y_continuous( breaks = seq(from = 0, to = 25000, by = 500) ) +
+    scale_x_continuous( breaks = seq(from = 0, to = 30, by = 1) ) +
+    labs(x = 'Tempo Médio Entre Pedidos',
+         y = 'Total de Usuários') +
+    theme_bw()
+
+    #Apesar de o número de usuários ser relativamente menor, o padrão se mantem.
 
 #17 # O vetor abaixo lista todos os IDs de bananas maduras em seu estado natural.
     # Utilizando este vetor, identifique se existem pedidos com mais de um tipo de banana no mesmo pedido.
