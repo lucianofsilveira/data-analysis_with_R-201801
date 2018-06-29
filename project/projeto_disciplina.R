@@ -268,12 +268,35 @@ top10_insta_orders %>%
 #17 # O vetor abaixo lista todos os IDs de bananas maduras em seu estado natural.
     # Utilizando este vetor, identifique se existem pedidos com mais de um tipo de banana no mesmo pedido.
 
-#bananas <- c(24852, 13176, 39276, 37067, 29259)
+bananas <- c(24852, 13176, 39276, 37067, 29259)
 
+#Não foram encontrados pedidos com este produto no Top 10
+top10_insta_orders %>%
+    filter(product_id %in% bananas)
+
+#Utilizando o dataframe original
+products %>%
+    filter(product_id %in% bananas) %>%
+    inner_join(insta_products, by = 'product_id') %>%
+    inner_join(insta_orders, by = 'order_id') %>%
+    group_by(order_id) %>%
+    summarise(count = n_distinct(product_id)) %>%
+    filter(count > 1) %>%
+    ungroup() %>%
+    pull(order_id) -> orders_banana
 
 #18 # Se existirem, pedidos resultantes da atividade 17, conte quantas vezes cada tipo de banana aparece nestes pedidos com mais de um tipo de banana.
     # Após exibir os tipos de banana, crie um novo vetor de id de bananas contendo somente os 3 produtos de maior contagem de ocorrências
 
+products %>%
+    filter(product_id %in% bananas) %>%
+    inner_join(insta_products, by = 'product_id') %>%
+    filter(order_id %in% orders_banana) %>%
+    group_by(product_id, product_name) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count)) %>%
+    head(n = 3) %>%
+    pull(product_id) -> top3_bananas
 
 #19 # Com base no vetor criado na atividade 18, conte quantos pedidos de, em média, são feitos por hora em cada dia da semana. 
 
