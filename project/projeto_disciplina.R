@@ -270,7 +270,7 @@ top10_insta_orders %>%
 
 bananas <- c(24852, 13176, 39276, 37067, 29259)
 
-#Não foram encontrados pedidos com este produto no Top 10
+#Não foram encontrados pedidos com estes produtos no Top 10
 top10_insta_orders %>%
     filter(product_id %in% bananas)
 
@@ -298,13 +298,36 @@ products %>%
     head(n = 3) %>%
     pull(product_id) -> top3_bananas
 
-#19 # Com base no vetor criado na atividade 18, conte quantos pedidos de, em média, são feitos por hora em cada dia da semana. 
+#19 # Com base no vetor criado na atividade 18, conte quantos pedidos de, em média, são feitos por hora em cada dia da semana.
 
+insta_orders %>%
+    inner_join(insta_products, by = 'order_id') %>%
+    filter(product_id %in% top3_bananas) %>%
+    group_by(order_dow, order_hour_of_day) %>%
+    summarise(count = n_distinct(order_id)) %>%
+    ungroup()
 
 #20 # Faça um gráfico dos pedidos de banana da atividade 19. O gráfico deve ter o dia da semana no eixo X, a hora do dia no eixo Y, 
     # e pontos na intersecção dos eixos, onde o tamanho do ponto é determinado pela quantidade média de pedidos de banana 
     # nesta combinação de dia da semana com hora
 
+insta_orders %>%
+    inner_join(insta_products, by = 'order_id') %>%
+    filter(product_id %in% top3_bananas) %>%
+    group_by(order_dow, order_hour_of_day) %>%
+    summarise(count = n_distinct(order_id)) %>%
+    mutate(dow = as.numeric(order_dow),
+           hour = as.numeric(order_hour_of_day),
+           media = mean(count)) %>%
+    ungroup() %>%
+    ggplot( aes( x = dow, y = count )) +
+    #geom_point(aes(size = count)) +
+    stat_summary(fun.data = mean_sdl) +
+    #scale_x_continuous( breaks = seq(from = 0, to = 6, by = 1)) +
+    #scale_y_continuous( breaks = seq(from = 0, to = 24, by = 1 )) +
+    labs(x = 'Dia da Semana',
+         y = 'Hora do Dia' ) +
+    theme_bw()
 
 #21 # Faça um histograma da quantidade média calculada na atividade 19, facetado por dia da semana
 
