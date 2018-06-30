@@ -314,23 +314,28 @@ insta_orders %>%
 insta_orders %>%
     inner_join(insta_products, by = 'order_id') %>%
     filter(product_id %in% top3_bananas) %>%
-    group_by(order_dow, order_hour_of_day) %>%
-    summarise(count = n_distinct(order_id)) %>%
-    mutate(dow = as.numeric(order_dow),
-           hour = as.numeric(order_hour_of_day),
-           media = mean(count)) %>%
+    group_by(order_dow, order_hour_of_day, order_id) %>%
     ungroup() %>%
-    ggplot( aes( x = dow, y = count )) +
-    #geom_point(aes(size = count)) +
-    stat_summary(fun.data = mean_sdl) +
-    #scale_x_continuous( breaks = seq(from = 0, to = 6, by = 1)) +
+    ggplot( aes( x = order_dow, y = order_hour_of_day)) +
+    geom_count() +
+    scale_x_continuous( breaks = seq(from = 0, to = 6, by = 1)) +
     #scale_y_continuous( breaks = seq(from = 0, to = 24, by = 1 )) +
     labs(x = 'Dia da Semana',
-         y = 'Hora do Dia' ) +
+         y = 'Hora do Dia',
+         size = 'Produtos') +
     theme_bw()
 
 #21 # Faça um histograma da quantidade média calculada na atividade 19, facetado por dia da semana
 
+insta_orders %>%
+    inner_join(insta_products, by = 'order_id') %>%
+    filter(product_id %in% top3_bananas) %>%
+    group_by(order_dow, order_hour_of_day) %>%
+    summarise(count = n_distinct(order_id)) %>%
+    ungroup() %>%
+    ggplot(aes(x = count)) +
+    geom_histogram(breaks = seq(from = 0, to = 850, by = 5)) +
+    facet_wrap(~order_dow, ncol = 2)
 
 #22 # Teste se há diferença nas vendas por hora entre os dias 3 e 4 usando o teste de wilcoxon e utilizando a simulação da aula de testes
 
