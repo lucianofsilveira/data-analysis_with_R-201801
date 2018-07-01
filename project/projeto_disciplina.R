@@ -319,7 +319,6 @@ insta_orders %>%
     ggplot( aes( x = order_dow, y = order_hour_of_day)) +
     geom_count() +
     scale_x_continuous( breaks = seq(from = 0, to = 6, by = 1)) +
-    #scale_y_continuous( breaks = seq(from = 0, to = 24, by = 1 )) +
     labs(x = 'Dia da Semana',
          y = 'Hora do Dia',
          size = 'Produtos') +
@@ -339,3 +338,9 @@ insta_orders %>%
 
 #22 # Teste se há diferença nas vendas por hora entre os dias 3 e 4 usando o teste de wilcoxon e utilizando a simulação da aula de testes
 
+insta_orders %>%
+    group_by(order_dow, order_hour_of_day) %>%
+    summarise(count = n()) %>%
+    ungroup() -> orders_days
+
+wilcox.test(count ~ order_dow, data = orders_days, alternative = "two.sided", subset = order_dow %in% c(3, 4), conf.int = TRUE)
