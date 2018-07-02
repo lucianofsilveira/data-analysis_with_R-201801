@@ -1,3 +1,5 @@
+# Componentes: Danyel Saldanha, Luciano Silveira e Ronaldo Bernardi
+
 # Descrição dos dados: https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2
 # Estamos trabalhando com somente uma amostra do total de pedidos. O dataset abaixo não possui 3 milhões de pedidos ;)
 library( tidyverse )
@@ -128,7 +130,7 @@ top5_products %>%
     ungroup() %>%
     group_by(product_id, product_name, order_hour_of_day) %>%
     summarise(media_qtd_hora = mean(qtd_hora)) %>%
-    ungroup()  %>% View() -> orders_product_x_hour
+    ungroup() -> orders_product_x_hour
 
 library(ggplot2)
 
@@ -339,8 +341,13 @@ insta_orders %>%
 #22 # Teste se há diferença nas vendas por hora entre os dias 3 e 4 usando o teste de wilcoxon e utilizando a simulação da aula de testes
 
 insta_orders %>%
+    filter(order_dow %in% c(3, 4)) %>%
     group_by(order_dow, order_hour_of_day) %>%
     summarise(count = n()) %>%
     ungroup() -> orders_days
 
-wilcox.test(count ~ order_dow, data = orders_days, alternative = "two.sided", subset = order_dow %in% c(3, 4), conf.int = TRUE)
+wilcox.test(count ~ order_dow, data = orders_days, alternative = "two.sided", conf.int = TRUE)
+
+kruskal.test(count ~ order_dow, data = orders_days)
+
+pairwise.wilcox.test(orders_days$count, orders_days$order_dow, p.adjust.method = "BH")
